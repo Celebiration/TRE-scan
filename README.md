@@ -40,7 +40,7 @@
 
 样本信息为一个csv文件，文件名为mapping.csv：
 
-![image-20241023134518284](TRE-scan说明书.assets/image-20241023134518284.png)
+![image-20241023134518284](README.assets/image-20241023134518284.png)
 
 图 1 mapping.csv文件内容
 
