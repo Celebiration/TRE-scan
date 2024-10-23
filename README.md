@@ -52,8 +52,6 @@
 - control_sample：样本对应的对照组样本。若有多个对照样本，则样本间用一个英文逗号“,”隔开，若没有对应的对照，则不填；
 - use_as_pon：该样本是否用来组成pon（panel of normals，见下文）参考。若是，则填写“yes”，否则不填。
 
- 
-
 ### 2.   配置运行参数
 
 软件的参数配置文件为{RNAedit}/config.yaml，其中{RNAedit}表示软件的安装目录。有关yaml文件格式的介绍，参见https://docs.fileformat.com/programming/yaml/。
@@ -94,15 +92,11 @@ sequencelogo_span_len: 5
 gtf2bed_field: "exon"
 ```
 
- 
-
 ## 运行软件：
 
 流程的运行可以使用脚本runRNAedit：
 
 runRNAedit -d {dir} -c {config_file} -t {target_file1,target_file2...} -m {cores} -p {plot_prefix} -n
-
- 
 
 参数的解释如下：
 
@@ -140,21 +134,17 @@ runRNAedit -d {dir} -c {config_file} -t {target_file1,target_file2...} -m {cores
 
 如需调整任务的默认核数，可以在snakefile对应的rule-threads下调整。
 
- 
-
 在运行流程前，可以通过如下指令：
 
 runRNAedit {参数} -n
 
 查看将要运行的流程。其中-n指令将输出所有将要运行的流程命令到当前终端：
 
- ![image-20241023134714460](TRE-scan说明书.assets/image-20241023134714460.png)
+ ![image-20241023134714460](README.assets/image-20241023134714460.png)
 
 图 2 流程输出截图
 
 其中列出了执行每一步的具体内容，包括指令、线程数、输入/输出、运行原因等。确认无误后，方可运行。
-
- 
 
 若不运行整个分析流程，而是运行部分从而获取流程的中间文件，可以运行如下指令：
 
@@ -168,13 +158,13 @@ runRNAedit -t pon.vcf -p pon
 
 pon.dag.svg:
 
- ![image-20241023134721493](TRE-scan说明书.assets/image-20241023134721493.png)
+ ![image-20241023134721493](README.assets/image-20241023134721493.png)
 
 图 3 pon.dag.svg
 
 pon.filegraph.svg:
 
- ![image-20241023134727851](TRE-scan说明书.assets/image-20241023134727851.png)
+ ![image-20241023134727851](README.assets/image-20241023134727851.png)
 
 图 4 pon.filegraph.svg
 
@@ -190,31 +180,29 @@ runRNAedit {参数} -t {new_target}
 
 工作流程：
 
- ![image-20241023134733488](TRE-scan说明书.assets/image-20241023134733488.png)
+ ![image-20241023134733488](README.assets/image-20241023134733488.png)
 
 图 5 RNA-edit总流程
 
 文件工作流：
 
- ![image-20241023134736422](TRE-scan说明书.assets/image-20241023134736422.png)
+ ![image-20241023134736422](README.assets/image-20241023134736422.png)
 
 图 6 总流程文件示意图
 
 整个工作流程由23个步骤组合而成，主要步骤的详细信息见表2。简单来讲，软件建立了pon参考，并对每一个测试组样本（mapping.csv中sample_type为“test”的样本）进行了突变的calling以及筛选，同时提取了突变位点的注释以及覆盖度信息。最后，每一个测试组样本会生成{test_sample}.res和{test_sample}.annotation文件，分别对应其碱基替换突变信息（测试组、对照组ref和alt覆盖度）以及这些替换位点的注释信息（正/负链信息、基因信息、转录本信息），这些文件通过最终的分析和画图脚本draw_all_test_samples.R处理从而得到一系列分析结果：曼哈顿图、序列标识图、突变统计直方图、散点图（图7）以及详细的突变信息列表。
 
- ![image-20241023134745378](TRE-scan说明书.assets/image-20241023134745378.png)
+ ![image-20241023134745378](README.assets/image-20241023134745378.png)
 
 图 7 RNA编辑分析结果
 
 此外，生成的{sample}.RNA_edits.bed结果文件可用于查看鉴定出的RNA编辑位点在染色体/基因组上的分布情况。例如将文件用SnapGene打开：
 
- ![image-20241023134748033](TRE-scan说明书.assets/image-20241023134748033.png)
+ ![image-20241023134748033](README.assets/image-20241023134748033.png)
 
 图 8 编辑位点查看
 
 可以直观查看每一个RNA编辑位点的相关信息。
-
- 
 
 ## 设计原理：
 
@@ -223,7 +211,5 @@ runRNAedit {参数} -t {new_target}
 注：
 
 1. 为了最大可能地排除测序误差造成的突变，需要建立pon（panel of normals）参考文件。该文件应由尽可能多的正常样本（对照组）创建，并在每一个测试组样本进行突变calling时排除同时存在于pon中的突变。例如，当min_sample_count=2时，只要突变在pon中的2个样本中出现，则为该突变加上“panel_of_normals”的注释。
-
 2. 由于不同参考基因组的注释情况不同，如人类参考基因组注释到外显子层面，而大肠杆菌仅注释到基因层面，因此在获取突变位点的注释信息（正/负链、基因、转录本）时，需要指定gtf2bed_field参数用于提取对应层面的信息。该参数对应gtf文件的第三列。提取的注释信息包括以下域： “gene_id”、“gene_name”、“transcript_id”、“transcript_name”、“gene_type”、“transcript_type”、“strand”。
-
 3. 软件默认提取A-G突变。因此，突变位点转录的strand信息尤为重要。考虑到注释可能存在的冗余（即一个位点对应多个注释），软件会将某一位点所有注释的链进行比较从而确定该位点转录的是正链或负链。例如，某突变在vcf文件中为T-C突变，其对应位置有3条注释为正链（“+”），1条为负链，则认为该突变位点为RNA上的T-C突变；若3条为负链，1条为正链，则认为该突变为RNA上的A-G突变。若注释的正负链数相等，则去掉该位点的的记录。
