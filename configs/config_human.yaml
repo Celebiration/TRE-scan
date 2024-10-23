@@ -1,0 +1,17 @@
+mapping: "mapping.csv"
+reference: "reference/GRCh38.p13.genome.fa"
+intervals_list: "reference/human.intervals.list"
+annotation_gtf: "reference/gencode.v42.chr_patch_hapl_scaff.annotation.gtf"
+STAR:
+  STARref: "/Yol_Data/resources/Gencode_human_ref/hg38_STAR_ref"
+  genomeSAindexNbases: 14
+  outFilterMultimapNmax: 20
+  sjdbOverhang: 150 #read_length - 1
+min_sample_count: 2
+min_mapping_quality: 20
+min_base_quality: 30
+maximum_alt_percent_in_control: 0.01
+minimum_editing_site_coverage_in_test: 10
+sequencelogo_span_len: 5
+gtf2bed_field: "exon"
+readcommand: ""

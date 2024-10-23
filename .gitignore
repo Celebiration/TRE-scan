@@ -1,0 +1,4 @@
+/test_E_colli2/reference/STAR_ref/*
+/test_E_colli2/.snakemake
+/test_E_colli
+/test/.snakemake

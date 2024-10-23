@@ -1,0 +1,15 @@
+name: RNA_edit_draw
+channels:
+ - r
+ - conda-forge
+ - bioconda
+ - defaults
+dependencies:
+ - r-base=4.2.2
+ - r-ggplot2=3.4.1
+ - bioconductor-Biostrings=2.66.0
+ - r-ggseqlogo=0.1
+ - r-dplyr=1.1.0
+ - r-qqman=0.1.8
+ - r-viridis=0.6.2
+ - r-tidyselect=1.2.0

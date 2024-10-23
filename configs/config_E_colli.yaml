@@ -1,0 +1,17 @@
+mapping: "mapping.csv"
+reference: "reference/GCF_000005845.2_ASM584v2_genomic.fna"
+intervals_list: "reference/E.colli.intervals.list"
+annotation_gtf: "reference/GCF_000005845.2_ASM584v2_genomic.gtf"
+STAR:
+  STARref: ""
+  genomeSAindexNbases: 10
+  outFilterMultimapNmax: 5
+  sjdbOverhang: 149 #read_length - 1
+min_sample_count: 1
+min_mapping_quality: 20
+min_base_quality: 30
+maximum_alt_percent_in_control: 0.01
+minimum_editing_site_coverage_in_test: 10
+sequencelogo_span_len: 5
+gtf2bed_field: "gene"
+readcommand: ""

@@ -1,0 +1,40 @@
+#!/usr/bin/bash
+#pre-defined
+tmp=$0
+installdir=${tmp%/*}
+
+set -e
+Usage()
+{
+    echo "runRNAedit -d {dir} -c {config_file} -t {target_file1,target_file2...} -m {cores} -p {plot_prefix} -n"
+}
+
+wkdir="."
+config_file=${installdir}/config_human.yaml
+cores=128
+plot=0
+target_files=success
+dryrun=0
+
+while getopts ':d:c:t:m:p:n' OPT; do
+    case $OPT in
+        d) wkdir="$OPTARG";;
+        c) config_file="$OPTARG";;
+        t) target_files="$OPTARG";;
+        m) cores="$OPTARG";;
+        p) plot=1;plot_prefix="$OPTARG";;
+        n) dryrun=1;;
+        *) Usage; exit 1;;
+    esac
+done
+
+if [ $plot -eq 1 ]
+then
+    snakemake -s ${installdir}/snakefile -d $wkdir --cores $cores --configfile $config_file --use-conda ${target_files} --dag | dot -Tsvg > ${wkdir}/${plot_prefix}.dag.svg
+    snakemake -s ${installdir}/snakefile -d $wkdir --cores $cores --configfile $config_file --use-conda ${target_files} --filegraph | dot -Tsvg > ${wkdir}/${plot_prefix}.filegraph.svg
+elif [ $dryrun -eq 1 ]
+then
+    snakemake -s ${installdir}/snakefile -d $wkdir --cores $cores --configfile $config_file --use-conda ${target_files} -np
+else
+    snakemake -s ${installdir}/snakefile -d $wkdir --cores $cores --configfile $config_file --use-conda ${target_files} -p
+fi
